@@ -26,8 +26,14 @@ public class ProviderServer {
     private EventLoopGroup bossEventLoopGroup;
     private EventLoopGroup workerEventLoopGroup;
 
+    private ProviderRegistry registry = new ProviderRegistry();
+
     public ProviderServer(int port) {
         this.port = port;
+    }
+
+    public <I> void registerService(Class<I> interfaceClass, I serviceInstance) {
+        registry.register(interfaceClass, serviceInstance);
     }
 
     public void start() {
@@ -47,11 +53,12 @@ public class ProviderServer {
                                     .addLast(new SimpleChannelInboundHandler<Request>() {
                                         @Override
                                         protected void channelRead0(ChannelHandlerContext channelHandlerContext, Request request) throws Exception {
-                                            System.out.println("收到请求：" + request);
-                                            Response response = new Response();
-                                            response.setResult(1);
-                                            channelHandlerContext.channel().writeAndFlush(response);
+                                            ProviderRegistry.Invocation<?> service = registry.findService(request.getServiceName());
 
+                                            Object result = service.invoke(request.getMethodName(), request.getParmsClass(), request.getParms());
+                                            Response response = new Response();
+                                            response.setResult(result);
+                                            channelHandlerContext.channel().writeAndFlush(response);
                                         }
                                     });
                         }
@@ -71,7 +78,4 @@ public class ProviderServer {
         }
     }
 
-    private static int add(int a, int b) {
-        return a + b;
-    }
 }

@@ -1,5 +1,7 @@
 package tech.insight.xiaoli.rpc.consumer;
 
+import tech.insight.xiaoli.rpc.api.Add;
+
 /**
  * ConsumerApp
  *
@@ -9,9 +11,9 @@ package tech.insight.xiaoli.rpc.consumer;
  */
 public class ConsumerApp {
     public static void main(String[] args) throws Exception {
-        Consumer consummer = new Consumer();
+        Add consummer = new Consumer();
 
-        System.out.println(consummer.add(1, 2));
+        System.out.println(consummer.add(1, 23));
         System.out.println(consummer.add(22, 23));
     }
 }

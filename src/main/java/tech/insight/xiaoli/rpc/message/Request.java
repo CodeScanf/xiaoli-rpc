@@ -13,6 +13,6 @@ import lombok.Data;
 public class Request {
     private String serviceName;
     private String methodName;
-    private String[] parmsClass;
+    private Class<?>[] parmsClass;
     private Object[] parms;
 }
